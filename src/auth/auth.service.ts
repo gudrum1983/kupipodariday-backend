@@ -4,15 +4,13 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { verifyHash } from '../helpers/hash';
 
-
 @Injectable()
-export class AuthService {
-  constructor(
-    private jwtService: JwtService,
-    readonly usersService: UsersService,
-  ) {}
 
-  async login(user: User) {
+export class AuthService {
+  constructor(private jwtService: JwtService,
+              readonly usersService: UsersService) {}
+
+  private async login(user: User) {
     const payload = { username: user.username, sub: user.id };
     return { access_token: this.jwtService.sign(payload) };
   }

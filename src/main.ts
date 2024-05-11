@@ -8,10 +8,12 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Добавим глобальный пайплайн валидации на следующей строке
-  app.useGlobalPipes(new ValidationPipe({
-    transform: true,
-    //skipMissingProperties: true
-  }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      //skipMissingProperties: true
+    }),
+  );
 
   app.use(cookieParser());
 

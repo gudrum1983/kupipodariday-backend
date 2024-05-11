@@ -3,10 +3,10 @@ import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { CreateUserDto } from '../users/dto/create-user.dto';
-import { ApiTags } from '@nestjs/swagger';
-import { AuthUser } from '../common/decorators/user.decorator';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { User } from '../users/entities/user.entity';
 import { AuthSigninDto } from './dto/auth-signin.dto';
+import { AuthLoginDto } from './dto/auth-login.dto';
 
 @ApiTags('Auth')
 @Controller('')
@@ -17,17 +17,16 @@ export class AuthController {
   ) {
   }
 
+
+  @ApiOkResponse({
+    description: 'Вход выполнен успешно',
+    type: AuthLoginDto
+  })
   @UseGuards(LocalAuthGuard)
   @Post('signin')
-  login(
-    @Body() authSigninDto: AuthSigninDto,
-  ) {
-    console.log({authSigninDto});
-    return this.authService.validateLoginPassword(authSigninDto.username, authSigninDto.password);
-
-    //if (this.authService.validateLoginPassword(authSigninDto.username, authSigninDto.password)) {}
-
-
+  async login(@Body() authSigninDto: AuthSigninDto): Promise<AuthLoginDto> {
+    const { username, password } = authSigninDto;
+    return await this.authService.validateLoginPassword(username, password);
   }
 
   @Post('signup')

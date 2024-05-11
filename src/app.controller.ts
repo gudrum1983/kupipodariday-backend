@@ -10,6 +10,6 @@ export class AppController {
   @Get('')
   @Redirect('/api')
   index() {
-    return
+    return;
   }
 }

@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiTags } from '@nestjs/swagger';
@@ -6,13 +14,10 @@ import { User } from './entities/user.entity';
 import { AuthUser } from '../common/decorators/user.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
 
-
 @ApiTags('User')
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {
-  }
-
+  constructor(private readonly usersService: UsersService) {}
 
   @Get()
   findAll() {
@@ -35,7 +40,7 @@ export class UsersController {
     });
   }
 
-/*  @Get(':id')
+  /*  @Get(':id')
   findOne(@Param('id') id: number) {
     return this.usersService.findOne(id);
   }*/
