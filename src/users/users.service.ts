@@ -5,6 +5,7 @@ import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOneOptions, Repository } from 'typeorm';
 import { hashValue } from '../helpers/hash';
+import { instanceToPlain } from 'class-transformer';
 
 @Injectable()
 export class UsersService {
@@ -18,7 +19,7 @@ export class UsersService {
     return this.usersRepository.find();
   }
 
-  async create(createUserDto: CreateUserDto) {
+/*  async create(createUserDto: CreateUserDto) {
     const { username, email, password, avatar, about } = createUserDto;
     const hashedPassword = await hashValue(password);
     const newUser = this.usersRepository.create({
@@ -29,16 +30,18 @@ export class UsersService {
       password: hashedPassword,
     });
     return this.usersRepository.save(newUser);
-  }
+  }*/
 
-  async signup(createUserDto: CreateUserDto): Promise<User> {
+  async signup(createUserDto: CreateUserDto): Promise<any> {
     const { password } = createUserDto;
     const hashedPassword = await hashValue(password);
     const newUser = this.usersRepository.create({
       ...createUserDto,
       password: hashedPassword,
     });
-    return this.usersRepository.save(newUser);
+    const userWithPassword = await this.usersRepository.save(newUser);
+    const userWithoutPassword = instanceToPlain(userWithPassword);
+    return userWithoutPassword;
   }
 
   async findByUsername(username: string) {

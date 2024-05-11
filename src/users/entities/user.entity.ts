@@ -39,10 +39,10 @@ export class User extends BaseEntityWithIdAndTime {
   @Column({ unique: true })
   email: string;
 
-  @ApiProperty({ description: 'Пароль пользователя', example: '123456789'})
+  @Exclude({toClassOnly: false, toPlainOnly:true})
   @Column({select: false})
+  @ApiProperty({ description: 'Пароль пользователя', example: '123456789'})
   @IsNotEmpty()
-  @Exclude()
   password: string;
 
   @OneToMany(() => Wish, (wishes) => wishes.owner)
