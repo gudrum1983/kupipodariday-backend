@@ -1,23 +1,17 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { User } from './entities/user.entity';
 import { AuthUser } from '../common/decorators/user.decorator';
-import { CreateUserDto } from './dto/create-user.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { UserResponseDto } from './dto/user-response.dto';
 
 @ApiTags('User')
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) {
+  }
 
   @Get()
   findAll() {
@@ -44,10 +38,13 @@ export class UsersController {
   findOne(@Param('id') id: number) {
     return this.usersService.findOne(id);
   }*/
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.updateOne(+id, updateUserDto);
+  @ApiOkResponse({
+    type: UserResponseDto,
+  })
+  @UseGuards(JwtAuthGuard)
+  @Patch('me')
+  update(@AuthUser() user, @Body() updateUserDto: UpdateUserDto) {
+    return this.usersService.updateOne(user, updateUserDto);
   }
 
   @Delete(':id')

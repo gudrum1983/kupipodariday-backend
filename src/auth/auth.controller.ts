@@ -5,8 +5,8 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { User } from '../users/entities/user.entity';
-import { AuthSigninDto } from './dto/auth-signin.dto';
-import { AuthLoginDto } from './dto/auth-login.dto';
+import { SigninUserResponseDto, SigninUserDto } from './dto/signin-user.dto';
+import { UserResponseDto } from '../users/dto/user-response.dto';
 
 @ApiTags('Auth')
 @Controller('')
@@ -20,15 +20,19 @@ export class AuthController {
 
   @ApiOkResponse({
     description: 'Вход выполнен успешно',
-    type: AuthLoginDto
+    type: SigninUserResponseDto
   })
   @UseGuards(LocalAuthGuard)
   @Post('signin')
-  async login(@Body() authSigninDto: AuthSigninDto): Promise<AuthLoginDto> {
+  async login(@Body() authSigninDto: SigninUserDto): Promise<SigninUserResponseDto> {
     const { username, password } = authSigninDto;
     return await this.authService.validateLoginPassword(username, password);
   }
 
+  @ApiOkResponse({
+    description: 'Создание нового пользователя прошло успешно',
+    type: UserResponseDto,
+  })
   @Post('signup')
   async signup(@Body() createUserDto: CreateUserDto): Promise<User> {
     return await this.usersService.signup(createUserDto);

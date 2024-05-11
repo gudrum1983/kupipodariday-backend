@@ -22,7 +22,7 @@ export class AuthService {
       return this.login(user);
     }
     if (!user) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException("jdfbvkdjbfvkdjfbvkdjfb");
     }
     return null;
   }
