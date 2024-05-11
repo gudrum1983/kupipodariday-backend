@@ -10,7 +10,9 @@ import {
 import { WishesService } from './wishes.service';
 import { CreateWishDto } from './dto/create-wish.dto';
 import { UpdateWishDto } from './dto/update-wish.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Wishes')
 @Controller('wishes')
 export class WishesController {
   constructor(private readonly wishesService: WishesService) {}
