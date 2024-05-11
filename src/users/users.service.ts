@@ -19,19 +19,6 @@ export class UsersService {
     return this.usersRepository.find();
   }
 
-/*  async create(createUserDto: CreateUserDto) {
-    const { username, email, password, avatar, about } = createUserDto;
-    const hashedPassword = await hashValue(password);
-    const newUser = this.usersRepository.create({
-      username,
-      email,
-      avatar,
-      about,
-      password: hashedPassword,
-    });
-    return this.usersRepository.save(newUser);
-  }*/
-
   async signup(createUserDto: CreateUserDto): Promise<any> {
     const { password } = createUserDto;
     const hashedPassword = await hashValue(password);

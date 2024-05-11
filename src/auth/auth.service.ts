@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { User } from '../users/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
-import { verifyHashSync } from '../helpers/hash';
+import { verifyHash } from '../helpers/hash';
 
 
 @Injectable()
@@ -19,9 +19,9 @@ export class AuthService {
 
   async validateLoginPassword(username: string, password: string) {
     const user = await this.usersService.findByUsername(username);
-    if (user && verifyHashSync(password, user.password)) {
-      const { password, ...result } = user;
-      return result;
+    const isCorrectPassword = await verifyHash(password, user.password);
+    if (user && isCorrectPassword) {
+      return this.login(user);
     }
     if (!user) {
       throw new UnauthorizedException();

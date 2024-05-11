@@ -40,7 +40,8 @@ export class User extends BaseEntityWithIdAndTime {
   email: string;
 
   @Exclude({toClassOnly: false, toPlainOnly:true})
-  @Column({select: false})
+  //@Column({select: false})
+  @Column()
   @ApiProperty({ description: 'Пароль пользователя', example: '123456789'})
   @IsNotEmpty()
   password: string;
