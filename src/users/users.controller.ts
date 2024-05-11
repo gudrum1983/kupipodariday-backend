@@ -5,7 +5,7 @@ import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { User } from './entities/user.entity';
 import { AuthUser } from '../common/decorators/user.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { UserResponseDto } from './dto/user-response.dto';
+import { SingnupUserResponseDto } from '../auth/dto/singnup-user-response.dto';
 
 @ApiTags('User')
 @Controller('users')
@@ -39,7 +39,7 @@ export class UsersController {
     return this.usersService.findOne(id);
   }*/
   @ApiOkResponse({
-    type: UserResponseDto,
+    type: SingnupUserResponseDto,
   })
   @UseGuards(JwtAuthGuard)
   @Patch('me')

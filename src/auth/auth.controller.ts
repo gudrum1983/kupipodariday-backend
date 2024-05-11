@@ -5,8 +5,9 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { User } from '../users/entities/user.entity';
-import { SigninUserResponseDto, SigninUserDto } from './dto/signin-user.dto';
-import { UserResponseDto } from '../users/dto/user-response.dto';
+import { SigninUserDto } from './dto/signin-user.dto';
+import { SingnupUserResponseDto } from './dto/singnup-user-response.dto';
+import { SigninUserResponseDto } from './dto/singnin-user-response.dto';
 
 @ApiTags('Auth')
 @Controller('')
@@ -20,7 +21,7 @@ export class AuthController {
 
   @ApiOkResponse({
     description: 'Вход выполнен успешно',
-    type: SigninUserResponseDto
+    type: SigninUserResponseDto,
   })
   @UseGuards(LocalAuthGuard)
   @Post('signin')
@@ -31,7 +32,7 @@ export class AuthController {
 
   @ApiOkResponse({
     description: 'Создание нового пользователя прошло успешно',
-    type: UserResponseDto,
+    type: SingnupUserResponseDto,
   })
   @Post('signup')
   async signup(@Body() createUserDto: CreateUserDto): Promise<User> {

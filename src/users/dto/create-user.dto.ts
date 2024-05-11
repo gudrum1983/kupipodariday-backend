@@ -5,4 +5,7 @@ export class CreateUserDto extends OmitType(User, [
   'id',
   'createdAt',
   'updatedAt',
+  'wishes',
+  'wishlists',
+  'offers',
 ] as const) {}

@@ -1,6 +1,10 @@
+import { ApiProperty } from '@nestjs/swagger';
 
-
-import { PartialType } from '@nestjs/swagger';
-import { CreateUserDto } from './create-user.dto';
-
-export class FindUsersDto extends PartialType(CreateUserDto) {}
+export class FindUsersDto {
+  @ApiProperty({
+      description: 'username или email',
+      example: 'user@email.com',
+    },
+  )
+  query: string;
+}
