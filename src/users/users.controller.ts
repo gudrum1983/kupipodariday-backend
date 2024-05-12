@@ -8,7 +8,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiExtraModels, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { User } from './entities/user.entity';
 import { AuthUser } from '../common/decorators/user.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -17,6 +17,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { FindUsersDto } from './dto/find-user.dto';
 
 @ApiTags('User')
+@ApiExtraModels(User)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

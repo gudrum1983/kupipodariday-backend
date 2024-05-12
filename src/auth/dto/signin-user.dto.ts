@@ -5,4 +5,3 @@ export class SigninUserDto extends PickType(User, [
   'username',
   'password',
 ] as const) {}
-

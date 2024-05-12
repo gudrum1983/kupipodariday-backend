@@ -63,15 +63,15 @@ export class User extends BaseEntityWithIdAndTime {
   @IsNotEmpty()
   password: string;
 
-  @ApiProperty()
+  @ApiProperty({ type: () => Wish, isArray: true })
   @OneToMany(() => Wish, (wishes) => wishes.owner)
   wishes: Wish[];
 
-  @ApiProperty()
+  @ApiProperty({ type: () => Offer, isArray: true })
   @OneToMany(() => Offer, (offer) => offer.user)
   offers: Offer[];
 
-  @ApiProperty()
+  @ApiProperty({ type: () => Wishlist, isArray: true })
   @OneToMany(() => Wishlist, (wishlists) => wishlists.owner)
   wishlists: Wishlist[];
 }

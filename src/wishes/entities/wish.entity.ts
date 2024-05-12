@@ -1,17 +1,51 @@
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { Offer } from '../../offers/entities/offer.entity';
-import { IsNotEmpty, IsNumber, IsUrl } from 'class-validator';
-import { BaseEntityWishWithOwner } from '../../baseEntity/entities/BaseEntityWishWithOwner.entity';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  IsUrl,
+  Length,
+  MaxLength,
+} from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { User } from '../../users/entities/user.entity';
+import { BaseEntityWithIdAndTime } from '../../baseEntity/entities/BaseEntityWithIdAndTime.entity';
+import { wishNameLengthMax, wishNameLengthMin } from '../../../utils/constants';
 
 @Entity()
-export class Wish extends BaseEntityWishWithOwner {
-  @Column({
-    type: 'varchar',
+export class Wish extends BaseEntityWithIdAndTime {
+  @ApiProperty({
+    description: 'Наименование подарка',
   })
+  @IsString()
+  @Column()
+  @Length(wishNameLengthMin, wishNameLengthMax)
+  name: string;
+
+  @ApiProperty({
+    description: 'Изображение подарка',
+  })
+  @IsNotEmpty()
+  @Column()
+  @IsUrl()
+  image: string;
+
+  @ApiProperty({
+    description: 'Ссылка на магазин и подарок',
+    example: 'https://market.yandex.ru/cc/PxU1mub',
+  })
+  @IsNotEmpty()
+  @Column()
   @IsUrl()
   link: string;
 
+  @ApiProperty({
+    description: 'Стоимость подарка',
+    example: 1500,
+  })
   @Column()
+  @IsNotEmpty()
   @IsNumber({
     allowNaN: false,
     allowInfinity: false,
@@ -19,6 +53,10 @@ export class Wish extends BaseEntityWishWithOwner {
   })
   price: string;
 
+  @ApiProperty({
+    description: 'Сумма донатов',
+    example: 0,
+  })
   @Column()
   @IsNumber({
     allowNaN: false,
@@ -27,16 +65,33 @@ export class Wish extends BaseEntityWishWithOwner {
   })
   raised: string;
 
-  @Column({
-    type: 'varchar',
-    length: 1024,
+  @ApiProperty({
+    description: 'Сумма донатов',
+    example: 0,
   })
+  @IsString()
+  @MaxLength(1024)
+  @Column()
   @IsNotEmpty()
   description: string;
 
+  @ApiProperty({
+    description: 'Счетчик копирования',
+    example: 0,
+  })
   @Column()
+  @IsNumber()
   copied: number;
 
+  @ApiProperty({
+    description: 'Список спонсоров',
+    type: () => Offer,
+    isArray: true,
+  })
   @OneToMany(() => Offer, (offer) => offer.item)
   offers: Offer[];
+
+  @ApiProperty({ type: () => User, description: 'Владелец' })
+  @ManyToOne(() => User, (owner) => owner.wishes)
+  owner: User;
 }
