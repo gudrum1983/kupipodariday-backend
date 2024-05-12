@@ -5,10 +5,11 @@ import { UsersService } from '../users/users.service';
 import { verifyHash } from '../helpers/hash';
 
 @Injectable()
-
 export class AuthService {
-  constructor(private jwtService: JwtService,
-              readonly usersService: UsersService) {}
+  constructor(
+    private jwtService: JwtService,
+    readonly usersService: UsersService,
+  ) {}
 
   private async login(user: User) {
     const payload = { username: user.username, sub: user.id };
@@ -16,13 +17,13 @@ export class AuthService {
   }
 
   async validateLoginPassword(username: string, password: string) {
-    const user = await this.usersService.findByUsername(username);
+    const user = await this.usersService.findOneForValidate(username);
     const isCorrectPassword = await verifyHash(password, user.password);
     if (user && isCorrectPassword) {
       return this.login(user);
     }
     if (!user) {
-      throw new UnauthorizedException("jdfbvkdjbfvkdjfbvkdjfb");
+      throw new UnauthorizedException('jdfbvkdjbfvkdjfbvkdjfb');
     }
     return null;
   }

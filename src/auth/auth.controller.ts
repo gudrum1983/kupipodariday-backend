@@ -15,9 +15,7 @@ export class AuthController {
   constructor(
     private usersService: UsersService,
     private authService: AuthService,
-  ) {
-  }
-
+  ) {}
 
   @ApiOkResponse({
     description: 'Вход выполнен успешно',
@@ -25,7 +23,9 @@ export class AuthController {
   })
   @UseGuards(LocalAuthGuard)
   @Post('signin')
-  async login(@Body() authSigninDto: SigninUserDto): Promise<SigninUserResponseDto> {
+  async login(
+    @Body() authSigninDto: SigninUserDto,
+  ): Promise<SigninUserResponseDto> {
     const { username, password } = authSigninDto;
     return await this.authService.validateLoginPassword(username, password);
   }

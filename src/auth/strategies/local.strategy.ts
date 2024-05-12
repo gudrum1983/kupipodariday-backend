@@ -10,15 +10,15 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(username: string, password: string) {
-    const user = await this.authService.validateLoginPassword(
+    const accessToken = await this.authService.validateLoginPassword(
       username,
       password,
     );
 
-    if (!user) {
+    if (!accessToken) {
       throw new UnauthorizedException('Неправильное имя или пароль');
     }
 
-    return user;
+    return accessToken;
   }
 }
