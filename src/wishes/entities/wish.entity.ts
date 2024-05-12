@@ -57,13 +57,13 @@ export class Wish extends BaseEntityWithIdAndTime {
     description: 'Сумма донатов',
     example: 0,
   })
-  @Column()
+  @Column({ default: 0 })
   @IsNumber({
     allowNaN: false,
     allowInfinity: false,
     maxDecimalPlaces: 2,
   })
-  raised: string;
+  raised: number;
 
   @ApiProperty({
     description: 'Сумма донатов',
@@ -79,7 +79,7 @@ export class Wish extends BaseEntityWithIdAndTime {
     description: 'Счетчик копирования',
     example: 0,
   })
-  @Column()
+  @Column({ default: 0 })
   @IsNumber()
   copied: number;
 

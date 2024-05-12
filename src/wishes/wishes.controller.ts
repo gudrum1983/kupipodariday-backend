@@ -6,12 +6,16 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { WishesService } from './wishes.service';
 import { CreateWishDto } from './dto/create-wish.dto';
 import { UpdateWishDto } from './dto/update-wish.dto';
-import { ApiExtraModels, ApiTags } from '@nestjs/swagger';
+import { ApiExtraModels, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Wish } from './entities/wish.entity';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { AuthUser } from '../common/decorators/user.decorator';
+import { User } from '../users/entities/user.entity';
 
 @ApiTags('Wishes')
 @ApiExtraModels(Wish)
@@ -19,14 +23,21 @@ import { Wish } from './entities/wish.entity';
 export class WishesController {
   constructor(private readonly wishesService: WishesService) {}
 
+  @ApiOkResponse({ type: null })
+  @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() createWishDto: CreateWishDto) {
-    return this.wishesService.create(createWishDto);
+  async create(
+    @AuthUser() user: User,
+    @Body() createWishDto: CreateWishDto,
+  ): Promise<null> {
+    console.log('CREATE WISH');
+    console.log('CREATE WISH USER', user);
+    return await this.wishesService.create(user, createWishDto);
   }
 
-  @Get()
-  findAll() {
-    return this.wishesService.findAll();
+  @Get('last')
+  findLast() {
+    return this.wishesService.findLast();
   }
 
   @Get(':id')
