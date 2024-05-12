@@ -3,7 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOneOptions, Repository } from 'typeorm';
+import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { hashValue } from '../helpers/hash';
 import { instanceToPlain } from 'class-transformer';
 import { FindUsersDto } from './dto/find-user.dto';
@@ -18,10 +18,6 @@ export class UsersService {
 
   async findOne(query: FindOneOptions<User>): Promise<User> {
     return this.usersRepository.findOne(query);
-  }
-
-  async findAll(): Promise<User[]> {
-    return this.usersRepository.find();
   }
 
   instanceUserToPlain(user: User): UserProfileResponseDto {
@@ -39,21 +35,26 @@ export class UsersService {
     return await this.instanceUserToPlain(userWithPassword);
   }
 
-  //findOne по полю userName
   async findByUsername(username: string): Promise<UserProfileResponseDto> {
-    const user = await this.usersRepository.findOne({
+    const user = await this.findOne({
       where: { username },
     });
     return this.instanceUserToPlain(user);
   }
 
   //findOne по полю userName
-  async findMany(body: FindUsersDto): Promise<Array<UserProfileResponseDto>> {
+  async findMany(query: FindManyOptions<User>): Promise<User[]> {
+    const users = await this.usersRepository.find(query);
+    return users;
+  }
+
+  async findByMailOrName(
+    body: FindUsersDto,
+  ): Promise<Array<UserProfileResponseDto>> {
     const { query } = body;
-    const users = await this.usersRepository.find({
+    return await this.findMany({
       where: [{ username: query }, { email: query }],
     });
-    return users;
   }
 
   async findOneForValidate(username: string): Promise<User> {
@@ -70,10 +71,6 @@ export class UsersService {
         password: true,
       },
     });
-  }
-
-  async findById(id: number): Promise<User> {
-    return await this.usersRepository.findOneBy({ id });
   }
 
   async updateOne(
@@ -94,33 +91,3 @@ export class UsersService {
     return await this.instanceUserToPlain(userWithPassword);
   }
 }
-
-/*export class userService {
-...
-    async getUserInfo(){
-        return userRepository.findOne({
-            where: {
-                id,
-            }
-        });
-    }
-    async getUserWithAddress(){
-        return userRepository.findOne({
-            where: {
-                id,
-            },
-            relations: {
-              address: true,
-            },
-        });
-    }
-    async getWithRelatives(){
-        return userRepository.findOne({
-            where: {
-                id,
-            },
-            relations: {
-              relatives: true,
-            },
-        });
-    }*/

@@ -43,7 +43,8 @@ export class UsersController {
   @ApiOkResponse({ type: UserProfileResponseDto, isArray: true })
   @Post('find')
   findMany(@Body() body: FindUsersDto): Promise<Array<UserProfileResponseDto>> {
-    return this.usersService.findMany(body);
+    console.log('FIND MANY USER');
+    return this.usersService.findByMailOrName(body);
   }
 
   @ApiOkResponse({ type: UserProfileResponseDto })
@@ -51,6 +52,7 @@ export class UsersController {
   findOne(
     @Param('username') username: string,
   ): Promise<UserProfileResponseDto> {
+    console.log('FIND USERNAME USER');
     return this.usersService.findByUsername(username);
   }
 }
