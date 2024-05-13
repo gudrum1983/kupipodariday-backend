@@ -1,4 +1,9 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateOfferDto } from './dto/create-offer.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, FindManyOptions, Repository } from 'typeorm';
@@ -21,7 +26,7 @@ export class OffersService {
     const queryRunner = this.dataSource.createQueryRunner();
     console.log(createOfferDto);
     const { amount, hidden, itemId } = createOfferDto;
-    const currentWish = await this.wishService.findOne(itemId);
+    const currentWish = await this.wishService.findOneById(itemId);
 
     if (!currentWish) {
       throw new NotFoundException('Такой подарок не найден!');

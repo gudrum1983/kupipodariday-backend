@@ -47,12 +47,17 @@ export class WishesController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.wishesService.findOne(Number(id));
+    return this.wishesService.findOneById(Number(id));
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateWishDto: UpdateWishDto) {
-    return this.wishesService.update(+id, updateWishDto);
+  update(
+    @AuthUser() user: User,
+    @Param('id') id: string,
+    @Body() updateWishDto: UpdateWishDto,
+  ) {
+    return this.wishesService.update(Number(id), user.id, updateWishDto);
   }
 
   @Delete(':id')
