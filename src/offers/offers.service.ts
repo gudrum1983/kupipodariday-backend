@@ -7,7 +7,7 @@ import {
 import { CreateOfferDto } from './dto/create-offer.dto';
 import { UpdateOfferDto } from './dto/update-offer.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, FindManyOptions, Repository } from 'typeorm';
 import { Offer } from './entities/offer.entity';
 import { User } from '../users/entities/user.entity';
 import { WishesService } from '../wishes/wishes.service';
@@ -85,11 +85,11 @@ export class OffersService {
     }
   }
 
-  findAll() {
-    return this.offersRepository.find({
+  find(query: { hidden?: boolean; id?: number }): Promise<Offer[]> {
+    const options: FindManyOptions<Offer> = {
       order: { createdAt: 'desc' },
       where: {
-        hidden: false,
+        hidden: query.hidden !== undefined ? query.hidden : false,
       },
       relations: [
         'user',
@@ -97,11 +97,24 @@ export class OffersService {
         'user.wishlist.offers',
         'user.wishlist.items',
       ],
-    });
+    };
+
+    if (query.id !== undefined) {
+      options.where = {
+        ...options.where,
+        id: query.id,
+      };
+    }
+
+    return this.offersRepository.find(options);
+  }
+
+  findAll() {
+    return this.find({});
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} offer`;
+    return this.find({ id, hidden: true });
   }
 
   update(id: number, updateOfferDto: UpdateOfferDto) {
