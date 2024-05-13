@@ -57,7 +57,7 @@ export class WishesService {
     }*/
 
   findOne(id: number) {
-    return this.wishesRepository.findOne({
+    return this.wishesRepository.findOneOrFail({
       where: { id },
       relations: {
         owner: true,
