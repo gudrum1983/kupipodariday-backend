@@ -40,6 +40,11 @@ export class WishesController {
     return this.wishesService.findLast();
   }
 
+  @Get('top')
+  findTop() {
+    return this.wishesService.findTop();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.wishesService.findOne(+id);

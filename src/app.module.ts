@@ -29,5 +29,4 @@ import { DatabaseConfigFactory } from './config/database-config.factory';
   controllers: [AppController],
   providers: [],
 })
-export class AppModule {
-}
+export class AppModule {}

@@ -51,7 +51,7 @@ export class Wish extends BaseEntityWithIdAndTime {
     allowInfinity: false,
     maxDecimalPlaces: 2,
   })
-  price: string;
+  price: number;
 
   @ApiProperty({
     description: 'Сумма донатов',
