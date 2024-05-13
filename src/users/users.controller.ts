@@ -8,7 +8,12 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { ApiExtraModels, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiExtraModels,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { User } from './entities/user.entity';
 import { AuthUser } from '../common/decorators/user.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -18,12 +23,13 @@ import { FindUsersDto } from './dto/find-user.dto';
 
 @ApiTags('User')
 @ApiExtraModels(User)
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @ApiOkResponse({ type: UserProfileResponseDto })
-  @UseGuards(JwtAuthGuard)
   @Patch('me')
   updateMe(
     @AuthUser() user: User,
@@ -34,7 +40,6 @@ export class UsersController {
   }
 
   @ApiOkResponse({ type: UserProfileResponseDto })
-  @UseGuards(JwtAuthGuard)
   @Get('me')
   findOwn(@AuthUser() user: User): UserProfileResponseDto {
     console.log('GET USER');

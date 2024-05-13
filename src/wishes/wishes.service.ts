@@ -11,6 +11,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { Wish } from './entities/wish.entity';
 
+type RequestDelete = {
+  userId: number;
+  wishId: number;
+};
+
 @Injectable()
 export class WishesService {
   constructor(
@@ -95,5 +100,16 @@ export class WishesService {
 
   remove(id: number) {
     return `This action removes a #${id} wish`;
+  }
+
+  async deleteOne({ wishId, userId }: RequestDelete): Promise<null> {
+    const wish = await this.findOneById(wishId);
+
+    if (wish.owner.id !== userId) {
+      throw new BadRequestException('Вы не имеете права удалить этот подарок.');
+    }
+
+    await this.wishesRepository.remove(wish);
+    return null;
   }
 }

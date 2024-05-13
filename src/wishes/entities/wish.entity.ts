@@ -52,7 +52,7 @@ export class Wish extends BaseEntityWithIdAndTime {
     maxDecimalPlaces: 2,
   })
   price: number;
-
+  //todo сделать проверку на сумму
   @ApiProperty({
     description: 'Сумма донатов',
     example: 0,

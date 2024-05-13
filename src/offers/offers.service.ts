@@ -58,11 +58,11 @@ export class OffersService {
       amount: amount,
       hidden: hidden,
     });
-
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
+    //todo блокировки сделать
+    /*https://stackoverflow.com/questions/69012855/typeorm-database-lock-please-explain-how-to-use-database-lock-in-typeorm-using*/
     try {
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
       // Сохраняем пользователя
       const newOffer = await queryRunner.manager.save(createOffer);
       currentWish.offers.push(newOffer);
