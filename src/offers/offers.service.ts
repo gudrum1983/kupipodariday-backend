@@ -1,11 +1,5 @@
-import {
-  BadRequestException,
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateOfferDto } from './dto/create-offer.dto';
-import { UpdateOfferDto } from './dto/update-offer.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, FindManyOptions, Repository } from 'typeorm';
 import { Offer } from './entities/offer.entity';
@@ -85,43 +79,37 @@ export class OffersService {
     }
   }
 
-  find(query: { hidden?: boolean; id?: number }): Promise<Offer[]> {
+  async find(id?: number): Promise<Offer[]> {
     const options: FindManyOptions<Offer> = {
       order: { createdAt: 'desc' },
       where: {
-        hidden: query.hidden !== undefined ? query.hidden : false,
+        hidden: false,
       },
       relations: [
         'user',
-        'user.wishlist',
-        'user.wishlist.offers',
-        'user.wishlist.items',
+        'user.wishlists',
+        'user.wishlists.owner',
+        //todo add wishlists
+        //'user.wishlists.items',
       ],
     };
 
-    if (query.id !== undefined) {
+    if (id !== undefined) {
       options.where = {
-        ...options.where,
-        id: query.id,
+        id: id,
       };
     }
 
-    return this.offersRepository.find(options);
+    return await this.offersRepository.find(options);
   }
 
   findAll() {
-    return this.find({});
+    return this.find();
   }
 
-  findOne(id: number) {
-    return this.find({ id, hidden: true });
-  }
-
-  update(id: number, updateOfferDto: UpdateOfferDto) {
-    return `This action updates a #${id} offer`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} offer`;
+  async findOne(id: number) {
+    const test = await this.find(id);
+    console.log('test', test);
+    return test;
   }
 }
