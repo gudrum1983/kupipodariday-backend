@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { CreateOfferDto } from './dto/create-offer.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, FindManyOptions, Repository } from 'typeorm';
+import { DataSource, FindManyOptions, QueryRunner, Repository } from 'typeorm';
 import { Offer } from './entities/offer.entity';
 import { User } from '../users/entities/user.entity';
 import { WishesService } from '../wishes/wishes.service';
@@ -21,8 +21,11 @@ export class OffersService {
     private readonly dataSource: DataSource,
   ) {}
 
-  async create(currentUser: User, createOfferDto: CreateOfferDto) {
-    const queryRunner = this.dataSource.createQueryRunner();
+  async create(
+    currentUser: User,
+    createOfferDto: CreateOfferDto,
+  ): Promise<Offer> {
+    const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
     const { amount, hidden, itemId } = createOfferDto;
     const currentWish = await this.wishService.findOneById(itemId);
 
@@ -38,7 +41,7 @@ export class OffersService {
       );
     }
 
-    const sumWithRaised = currentWish.raised + amount;
+    const sumWithRaised: number = currentWish.raised + amount;
 
     if (sumWithRaised > Number(currentWish.price)) {
       throw new BadRequestException(
@@ -94,12 +97,12 @@ export class OffersService {
     return await this.offersRepository.find(options);
   }
 
-  findAll() {
-    return this.find();
+  async findAll(): Promise<Array<Offer>> {
+    return await this.find();
   }
 
-  async findOne(id: number) {
-    const test = await this.find(id);
+  async findOne(id: number): Promise<Array<Offer>> {
+    const test: Array<Offer> = await this.find(id);
     console.log('test', test);
     return test;
   }

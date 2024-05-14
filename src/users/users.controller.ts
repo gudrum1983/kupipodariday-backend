@@ -20,8 +20,11 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UserProfileResponseDto } from './dto/user-profile-response.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FindUsersDto } from './dto/find-user.dto';
+import { UserWishesDto } from './dto/user-wishes.dto';
+import { Wish } from '../wishes/entities/wish.entity';
+import { UserPublicProfileResponseDto } from './dto/user-public-profile-response.dto';
 
-@ApiTags('User')
+@ApiTags('Users')
 @ApiExtraModels(User)
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
@@ -46,6 +49,13 @@ export class UsersController {
     return this.usersService.instanceUserToPlain(user);
   }
 
+  @ApiOkResponse({ type: Array<Wish> })
+  @Get('me/wishes')
+  getOwnWishes(@AuthUser() user: User): Promise<Array<Wish>> {
+    console.log('FIND ME WISHES');
+    return this.usersService.getOwnWishes(Number(user.id));
+  }
+
   @ApiOkResponse({ type: UserProfileResponseDto, isArray: true })
   @Post('find')
   findMany(@Body() body: FindUsersDto): Promise<Array<UserProfileResponseDto>> {
@@ -53,12 +63,21 @@ export class UsersController {
     return this.usersService.findByMailOrName(body);
   }
 
-  @ApiOkResponse({ type: UserProfileResponseDto })
+  @ApiOkResponse({ type: UserPublicProfileResponseDto })
   @Get(':username')
   findOne(
     @Param('username') username: string,
-  ): Promise<UserProfileResponseDto> {
+  ): Promise<UserPublicProfileResponseDto> {
     console.log('FIND USERNAME USER');
     return this.usersService.findByUsername(username);
+  }
+
+  @ApiOkResponse({ type: Array<UserWishesDto> })
+  @Get(':username/wishes')
+  getWishes(
+    @Param('username') username: string,
+  ): Promise<Array<UserWishesDto>> {
+    console.log('FIND USERNAME WISHES');
+    return this.usersService.getWishes(username);
   }
 }

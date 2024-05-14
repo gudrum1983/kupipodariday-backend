@@ -8,6 +8,8 @@ import { hashValue } from '../common/helpers/hash';
 import { instanceToPlain } from 'class-transformer';
 import { FindUsersDto } from './dto/find-user.dto';
 import { UserProfileResponseDto } from './dto/user-profile-response.dto';
+import { Wish } from '../wishes/entities/wish.entity';
+import { UserPublicProfileResponseDto } from './dto/user-public-profile-response.dto';
 
 @Injectable()
 export class UsersService {
@@ -24,7 +26,7 @@ export class UsersService {
     return <UserProfileResponseDto>instanceToPlain(user);
   }
 
-  async signup(createUserDto: CreateUserDto): Promise<any> {
+  async signup(createUserDto: CreateUserDto): Promise<UserProfileResponseDto> {
     const { password } = createUserDto;
     const hashedPassword = await hashValue(password);
     const newUser = this.usersRepository.create({
@@ -32,18 +34,20 @@ export class UsersService {
       password: hashedPassword,
     });
     const userWithPassword = await this.usersRepository.save(newUser);
-    return await this.instanceUserToPlain(userWithPassword);
+    return this.instanceUserToPlain(userWithPassword);
   }
 
-  async findByUsername(username: string): Promise<UserProfileResponseDto> {
+  async findByUsername(
+    username: string,
+  ): Promise<UserPublicProfileResponseDto> {
     const user = await this.findOne({
       where: { username },
+      select: ['id', 'username', 'createdAt', 'updatedAt', 'about', 'avatar'],
     });
     return this.instanceUserToPlain(user);
   }
 
-  //findOne по полю userName
-  async findMany(query: FindManyOptions<User>): Promise<User[]> {
+  async findMany(query: FindManyOptions<User>): Promise<Array<User>> {
     return await this.usersRepository.find(query);
   }
 
@@ -84,6 +88,24 @@ export class UsersService {
     }
     const updatedUser = Object.assign(user, updateUserDto);
     const userWithPassword = await this.usersRepository.save(updatedUser);
-    return await this.instanceUserToPlain(userWithPassword);
+    return this.instanceUserToPlain(userWithPassword);
+  }
+
+  async getWishes(username: string): Promise<Array<Wish>> {
+    const options: FindOneOptions<User> = {
+      where: { username },
+      relations: ['wishes'],
+    };
+    const { wishes } = await this.usersRepository.findOne(options);
+    return wishes;
+  }
+
+  async getOwnWishes(id: number): Promise<Array<Wish>> {
+    const options: FindOneOptions<User> = {
+      where: { id },
+      relations: ['wishes', 'offers'],
+    };
+    const { wishes } = await this.usersRepository.findOne(options);
+    return wishes;
   }
 }

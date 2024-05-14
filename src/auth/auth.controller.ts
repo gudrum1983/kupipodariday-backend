@@ -4,10 +4,10 @@ import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { User } from '../users/entities/user.entity';
 import { SigninUserDto } from './dto/signin-user.dto';
 import { SingnupUserResponseDto } from './dto/singnup-user-response.dto';
 import { SigninUserResponseDto } from './dto/singnin-user-response.dto';
+import { UserProfileResponseDto } from '../users/dto/user-profile-response.dto';
 
 @ApiTags('Auth')
 @Controller('')
@@ -35,7 +35,9 @@ export class AuthController {
     type: SingnupUserResponseDto,
   })
   @Post('signup')
-  async signup(@Body() createUserDto: CreateUserDto): Promise<User> {
+  async signup(
+    @Body() createUserDto: CreateUserDto,
+  ): Promise<UserProfileResponseDto> {
     return await this.usersService.signup(createUserDto);
   }
 }

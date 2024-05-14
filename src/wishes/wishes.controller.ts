@@ -30,7 +30,7 @@ import { User } from '../users/entities/user.entity';
 export class WishesController {
   constructor(private readonly wishesService: WishesService) {}
 
-  @ApiOkResponse({ type: null })
+  @ApiOkResponse({ type: Wish })
   @Post()
   async create(
     @AuthUser() user: User,
@@ -41,44 +41,48 @@ export class WishesController {
     return await this.wishesService.create(user, createWishDto);
   }
 
+  @ApiOkResponse({ type: Array<Wish> })
   @Get('last')
-  findLast() {
+  findLast(): Promise<Array<Wish>> {
     return this.wishesService.findLast();
   }
 
+  @ApiOkResponse({ type: Array<Wish> })
   @Get('top')
-  findTop() {
+  findTop(): Promise<Array<Wish>> {
     return this.wishesService.findTop();
   }
 
+  @ApiOkResponse({ type: Wish })
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: string): Promise<Wish> {
     return this.wishesService.findOneById(Number(id));
   }
 
+  @ApiOkResponse({ type: Wish })
   @Patch(':id')
   update(
     @AuthUser() user: User,
     @Param('id') id: string,
     @Body() updateWishDto: UpdateWishDto,
-  ) {
+  ): Promise<Wish> {
     return this.wishesService.update(Number(id), user.id, updateWishDto);
   }
 
   @ApiOkResponse({ type: null })
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@AuthUser() user: User, @Param('id') id: string) {
+  remove(@AuthUser() user: User, @Param('id') id: string): Promise<null> {
     return this.wishesService.deleteOne({
       wishId: Number(id),
       userId: user.id,
     });
   }
 
-  @ApiOkResponse({ type: null })
+  @ApiOkResponse({ type: Wish })
   @UseGuards(JwtAuthGuard)
   @Post(':id/copy')
-  copy(@AuthUser() user: User, @Param('id') id: string) {
+  copy(@AuthUser() user: User, @Param('id') id: string): Promise<Wish> {
     return this.wishesService.copyOne({
       wishId: Number(id),
       user,
