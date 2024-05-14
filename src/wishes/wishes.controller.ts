@@ -35,7 +35,7 @@ export class WishesController {
   async create(
     @AuthUser() user: User,
     @Body() createWishDto: CreateWishDto,
-  ): Promise<null> {
+  ): Promise<Wish> {
     console.log('CREATE WISH');
     console.log('CREATE WISH USER', user);
     return await this.wishesService.create(user, createWishDto);
@@ -72,6 +72,16 @@ export class WishesController {
     return this.wishesService.deleteOne({
       wishId: Number(id),
       userId: user.id,
+    });
+  }
+
+  @ApiOkResponse({ type: null })
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/copy')
+  copy(@AuthUser() user: User, @Param('id') id: string) {
+    return this.wishesService.copyOne({
+      wishId: Number(id),
+      user,
     });
   }
 }

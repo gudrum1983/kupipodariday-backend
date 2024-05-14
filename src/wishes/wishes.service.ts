@@ -44,16 +44,24 @@ export class WishesService {
     return item;
   }
 
+  private async findOneForCopy(id: number): Promise<Wish> {
+    const options: FindOneOptions<Wish> = {
+      where: { id },
+      select: ['name', 'link', 'image', 'price', 'description', 'copied'],
+    };
+    const item = await this.wishesRepository.findOne(options);
+    if (!item) {
+      throw new NotFoundException('Такой подарок не найден!');
+    }
+    return item;
+  }
+
   async create(user, createWishDto: CreateWishDto) {
     const createWish = this.wishesRepository.create({
       ...createWishDto,
       owner: user.id,
     });
-    const newWish = await this.wishesRepository.save(createWish);
-    if (!newWish) {
-      throw new Error('Failed to create a new wish');
-    }
-    return null;
+    return await this.wishesRepository.save(createWish);
   }
 
   findLast() {
@@ -111,5 +119,11 @@ export class WishesService {
 
     await this.wishesRepository.remove(wish);
     return null;
+  }
+
+  async copyOne({ wishId, user }) {
+    const { copied, ...data } = await this.findOneForCopy(wishId);
+    await this.wishesRepository.update(wishId, { copied: copied + 1 });
+    return await this.create(user, data);
   }
 }

@@ -4,7 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
-import { hashValue } from '../helpers/hash';
+import { hashValue } from '../common/helpers/hash';
 import { instanceToPlain } from 'class-transformer';
 import { FindUsersDto } from './dto/find-user.dto';
 import { UserProfileResponseDto } from './dto/user-profile-response.dto';
@@ -44,8 +44,7 @@ export class UsersService {
 
   //findOne по полю userName
   async findMany(query: FindManyOptions<User>): Promise<User[]> {
-    const users = await this.usersRepository.find(query);
-    return users;
+    return await this.usersRepository.find(query);
   }
 
   async findByMailOrName(
@@ -81,10 +80,7 @@ export class UsersService {
       throw new Error('User not found');
     }
     if (updateUserDto.password) {
-      // Хешируем новый пароль
-      const hashedPassword = await hashValue(updateUserDto.password);
-      // Заменяем поле пароля на новый хеш
-      updateUserDto.password = hashedPassword;
+      updateUserDto.password = await hashValue(updateUserDto.password);
     }
     const updatedUser = Object.assign(user, updateUserDto);
     const userWithPassword = await this.usersRepository.save(updatedUser);

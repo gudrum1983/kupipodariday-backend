@@ -2,7 +2,6 @@ import {
   BadRequestException,
   ForbiddenException,
   Injectable,
-  NotFoundException,
 } from '@nestjs/common';
 import { CreateOfferDto } from './dto/create-offer.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -24,13 +23,8 @@ export class OffersService {
 
   async create(currentUser: User, createOfferDto: CreateOfferDto) {
     const queryRunner = this.dataSource.createQueryRunner();
-    console.log(createOfferDto);
     const { amount, hidden, itemId } = createOfferDto;
     const currentWish = await this.wishService.findOneById(itemId);
-
-    if (!currentWish) {
-      throw new NotFoundException('Такой подарок не найден!');
-    }
 
     if (currentWish.owner.id === currentUser.id) {
       throw new ForbiddenException(
@@ -38,44 +32,36 @@ export class OffersService {
       );
     }
 
-    if (currentWish.raised === Number(currentWish.price)) {
+    if (currentWish.raised === currentWish.price) {
       throw new BadRequestException(
         'Вы опоздали, на этот подарок уже нельзя скинуться!',
       );
     }
 
-    const sumWithReised = currentWish.raised + amount;
+    const sumWithRaised = currentWish.raised + amount;
 
-    if (sumWithReised > Number(currentWish.price)) {
+    if (sumWithRaised > Number(currentWish.price)) {
       throw new BadRequestException(
         'Сумма заявки превышает стоимость подарка!',
       );
     }
-    currentWish.raised = sumWithReised;
+    currentWish.raised = sumWithRaised;
     const createOffer = this.offersRepository.create({
       item: currentWish,
       user: currentUser,
       amount: amount,
       hidden: hidden,
     });
-    //todo блокировки сделать
+    //todo почитать про блокировки
     /*https://stackoverflow.com/questions/69012855/typeorm-database-lock-please-explain-how-to-use-database-lock-in-typeorm-using*/
     try {
       await queryRunner.connect();
       await queryRunner.startTransaction();
-      // Сохраняем пользователя
       const newOffer = await queryRunner.manager.save(createOffer);
       currentWish.offers.push(newOffer);
-      // Сохраняем другую сущность
       await queryRunner.manager.save(currentWish);
-      /*      const allWish = await this.wishService.findLast();*/
-
       await queryRunner.commitTransaction();
-
-      /*      return {
-              newOffer: newOffer,
-              allWish: allWish,
-            };*/
+      return newOffer;
     } catch (err) {
       await queryRunner.rollbackTransaction();
       throw err;
