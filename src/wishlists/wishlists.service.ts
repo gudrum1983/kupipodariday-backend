@@ -25,17 +25,14 @@ export class WishlistsService {
       where: {
         id: id,
       },
-      relations: ['items', 'owner'], // Вот здесь указывается имя поля, содержащего отношения
+      relations: ['items', 'owner'],
     };
     const wishlist = await this.wishlistRepository.findOne(options);
-    const test = <Wishlist>instanceToPlain(wishlist);
-    console.log({ test });
-    return test;
+    return <Wishlist>instanceToPlain(wishlist);
   }
 
   async create(owner, createWishlistDto: CreateWishlistDto): Promise<Wishlist> {
     const { itemsId, ...data } = createWishlistDto;
-
     const wishes: Array<Wish> = await this.wishesService.findByIds(itemsId);
     const createWishlist: Wishlist = this.wishlistRepository.create({
       ...data,

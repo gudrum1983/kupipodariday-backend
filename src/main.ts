@@ -7,11 +7,9 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
 
-  // Добавим глобальный пайплайн валидации на следующей строке
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
-      //skipMissingProperties: true
     }),
   );
 

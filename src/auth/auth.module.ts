@@ -13,10 +13,9 @@ import { ConfigModule } from '@nestjs/config';
   imports: [
     PassportModule,
     forwardRef(() => UsersModule),
-    ConfigModule.forRoot(), // убедитесь, что ConfigModule зарегистрирован
+    ConfigModule.forRoot(),
     JwtModule.registerAsync({
-      //imports: [ConfigModule], // здесь мы импортируем ConfigModule, чтобы он мог быть внедрен в JwtConfigFactory
-      useClass: JwtConfigFactory, // здесь мы используем класс JwtConfigFactory для создания опций JWT
+      useClass: JwtConfigFactory,
     }),
   ],
   providers: [AuthService, LocalStrategy, JwtStrategy, JwtConfigFactory],

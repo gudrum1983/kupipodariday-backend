@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  ForbiddenException,
-  Injectable,
-} from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
 import { CreateOfferDto } from './dto/create-offer.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, FindManyOptions, QueryRunner, Repository } from 'typeorm';
@@ -83,8 +79,7 @@ export class OffersService {
         'user',
         'user.wishlists',
         'user.wishlists.owner',
-        //todo add wishlists
-        //'user.wishlists.items',
+        'user.wishlists.items',
       ],
     };
 
@@ -102,8 +97,6 @@ export class OffersService {
   }
 
   async findOne(id: number): Promise<Array<Offer>> {
-    const test: Array<Offer> = await this.find(id);
-    console.log('test', test);
-    return test;
+    return await this.find(id);
   }
 }

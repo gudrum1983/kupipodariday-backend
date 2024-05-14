@@ -26,7 +26,6 @@ export class OffersController {
     @AuthUser() user: User,
     @Body() createOfferDto: CreateOfferDto,
   ): Promise<Offer> {
-    console.log('OFFER POST USER', user);
     return this.offersService.create(user, createOfferDto);
   }
 

@@ -17,26 +17,26 @@ export class Offer extends BaseEntityWithIdAndTime {
     allowInfinity: false,
     maxDecimalPlaces: 2,
   })
-  amount: number; //сумма заявки, округляется до двух знаков после запятой;
+  amount: number;
 
   @ApiProperty({
     description: 'Флаг скрыть информацию о спонсоре',
     example: false,
   })
   @Column({ default: false })
-  hidden: boolean; // флаг, который определяет показывать ли информацию о скидывающемся в списке. По умолчанию равен false.
+  hidden: boolean;
 
   @ApiProperty({
     description: 'Подарок',
     type: () => Wish,
   })
   @ManyToOne(() => Wish, (item) => item.id)
-  item: Wish; // item содержит ссылку на товар;
+  item: Wish;
 
   @ApiProperty({
     description: 'Пользователь',
     type: () => User,
   })
   @ManyToOne(() => User, (user) => user.offers)
-  user: User; //  ссылка на ид пользователя желающего скинуться
+  user: User;
 }

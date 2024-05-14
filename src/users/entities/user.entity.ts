@@ -25,7 +25,7 @@ import { Exclude } from 'class-transformer';
 export class User extends BaseEntityWithIdAndTime {
   @ApiProperty({ description: 'Имя пользователя', example: 'Александр' })
   @IsString()
-  @Length(userNameAndAboutLengthMin, userNameLengthMax) // Устанавливаем минимальную и максимальную длину строки
+  @Length(userNameAndAboutLengthMin, userNameLengthMax)
   @Column({ unique: true })
   username: string;
 

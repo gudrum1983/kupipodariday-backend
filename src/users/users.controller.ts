@@ -38,28 +38,24 @@ export class UsersController {
     @AuthUser() user: User,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<UserProfileResponseDto> {
-    console.log('PATCH USER');
     return this.usersService.updateOne(user, updateUserDto);
   }
 
   @ApiOkResponse({ type: UserProfileResponseDto })
   @Get('me')
   findOwn(@AuthUser() user: User): UserProfileResponseDto {
-    console.log('GET USER');
     return this.usersService.instanceUserToPlain(user);
   }
 
   @ApiOkResponse({ type: Array<Wish> })
   @Get('me/wishes')
   getOwnWishes(@AuthUser() user: User): Promise<Array<Wish>> {
-    console.log('FIND ME WISHES');
     return this.usersService.getOwnWishes(Number(user.id));
   }
 
   @ApiOkResponse({ type: UserProfileResponseDto, isArray: true })
   @Post('find')
   findMany(@Body() body: FindUsersDto): Promise<Array<UserProfileResponseDto>> {
-    console.log('FIND MANY USER');
     return this.usersService.findByMailOrName(body);
   }
 
@@ -68,7 +64,6 @@ export class UsersController {
   findOne(
     @Param('username') username: string,
   ): Promise<UserPublicProfileResponseDto> {
-    console.log('FIND USERNAME USER');
     return this.usersService.findByUsername(username);
   }
 
@@ -77,7 +72,6 @@ export class UsersController {
   getWishes(
     @Param('username') username: string,
   ): Promise<Array<UserWishesDto>> {
-    console.log('FIND USERNAME WISHES');
     return this.usersService.getWishes(username);
   }
 }

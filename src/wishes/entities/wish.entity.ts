@@ -98,6 +98,4 @@ export class Wish extends BaseEntityWithIdAndTime {
 
   @ManyToMany(() => Wishlist)
   Wishlists: Wishlist[];
-  //@JoinColumn({ name: 'wishlistId' })
-  //wishlist: Wishlist;
 }

@@ -37,8 +37,6 @@ export class WishesController {
     @AuthUser() user: User,
     @Body() createWishDto: CreateWishDto,
   ): Promise<Wish> {
-    console.log('CREATE WISH');
-    console.log('CREATE WISH USER', user);
     return await this.wishesService.create(user, createWishDto);
   }
 
