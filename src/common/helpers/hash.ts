@@ -1,10 +1,8 @@
 import * as bcrypt from 'bcrypt';
-
-//todo Вынести переменные???
+import config from '../../config/configuration';
 
 export async function hashValue(value: string): Promise<string> {
-  const saltRounds = 10;
-  const salt = bcrypt.genSaltSync(saltRounds);
+  const salt = bcrypt.genSaltSync(config().hash.saltRounds);
   return await bcrypt.hash(value, salt);
 }
 

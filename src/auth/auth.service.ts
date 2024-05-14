@@ -23,7 +23,7 @@ export class AuthService {
       return this.login(user);
     }
     if (!user) {
-      throw new UnauthorizedException('jdfbvkdjbfvkdjfbvkdjfb');
+      throw new UnauthorizedException('Неверный логин или пароль');
     }
     return null;
   }
