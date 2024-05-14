@@ -21,6 +21,7 @@ import { Wish } from './entities/wish.entity';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AuthUser } from '../common/decorators/user.decorator';
 import { User } from '../users/entities/user.entity';
+import { DeleteResult } from 'typeorm';
 
 @ApiTags('Wishes')
 @ApiBearerAuth()
@@ -72,7 +73,10 @@ export class WishesController {
   @ApiOkResponse({ type: null })
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@AuthUser() user: User, @Param('id') id: string): Promise<null> {
+  remove(
+    @AuthUser() user: User,
+    @Param('id') id: string,
+  ): Promise<DeleteResult> {
     return this.wishesService.deleteOne({
       wishId: Number(id),
       userId: user.id,

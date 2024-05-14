@@ -8,7 +8,13 @@ import {
 import { CreateWishDto } from './dto/create-wish.dto';
 import { UpdateWishDto } from './dto/update-wish.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
+import {
+  DeleteResult,
+  FindManyOptions,
+  FindOneOptions,
+  In,
+  Repository,
+} from 'typeorm';
 import { Wish } from './entities/wish.entity';
 
 type RequestDelete = {
@@ -54,6 +60,11 @@ export class WishesService {
       throw new NotFoundException('Такой подарок не найден!');
     }
     return item;
+  }
+
+  async findByIds(ids: Array<number>): Promise<Array<Wish>> {
+    const test = await this.findMany({ where: { id: In(ids) } });
+    return test;
   }
 
   async create(user, createWishDto: CreateWishDto) {
@@ -110,15 +121,20 @@ export class WishesService {
     return `This action removes a #${id} wish`;
   }
 
-  async deleteOne({ wishId, userId }: RequestDelete): Promise<null> {
+  async deleteOne({ wishId, userId }: RequestDelete): Promise<DeleteResult> {
     const wish = await this.findOneById(wishId);
 
     if (wish.owner.id !== userId) {
       throw new BadRequestException('Вы не имеете права удалить этот подарок.');
     }
 
-    await this.wishesRepository.remove(wish);
-    return null;
+    if (wish.raised > 0) {
+      throw new BadRequestException(
+        'Ишь чего захотел, раньше надо было думать, подарок закрыт для удаления.',
+      );
+    }
+
+    return await this.wishesRepository.delete(wishId);
   }
 
   async copyOne({ wishId, user }) {

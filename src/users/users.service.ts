@@ -88,6 +88,7 @@ export class UsersService {
     }
     const updatedUser = Object.assign(user, updateUserDto);
     const userWithPassword = await this.usersRepository.save(updatedUser);
+
     return this.instanceUserToPlain(userWithPassword);
   }
 

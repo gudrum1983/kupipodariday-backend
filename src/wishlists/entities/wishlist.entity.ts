@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne } from 'typeorm';
 import { Wish } from '../../wishes/entities/wish.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../users/entities/user.entity';
@@ -29,8 +29,9 @@ export class Wishlist extends BaseEntityWithIdAndTime {
     type: () => Wish,
     isArray: true,
   })
-  @OneToMany(() => Wish, (wish) => wish.id)
-  items: Wish[]; // содержит набор ссылок на подарки.
+  @ManyToMany(() => Wish)
+  @JoinTable()
+  items: Wish[];
 
   @ApiProperty({ type: () => User, description: 'Владелец' })
   @ManyToOne(() => User, (owner) => owner.wishlists)

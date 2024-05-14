@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
 import { Offer } from '../../offers/entities/offer.entity';
 import {
   IsNotEmpty,
@@ -12,6 +12,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../users/entities/user.entity';
 import { BaseEntityWithIdAndTime } from '../../baseEntity/entities/BaseEntityWithIdAndTime.entity';
 import { wishNameLengthMax, wishNameLengthMin } from '../../../utils/constants';
+import { Wishlist } from '../../wishlists/entities/wishlist.entity';
 
 @Entity()
 export class Wish extends BaseEntityWithIdAndTime {
@@ -94,4 +95,9 @@ export class Wish extends BaseEntityWithIdAndTime {
   @ApiProperty({ type: () => User, description: 'Владелец' })
   @ManyToOne(() => User, (owner) => owner.wishes)
   owner: User;
+
+  @ManyToMany(() => Wishlist)
+  Wishlists: Wishlist[];
+  //@JoinColumn({ name: 'wishlistId' })
+  //wishlist: Wishlist;
 }

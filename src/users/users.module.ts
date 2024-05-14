@@ -16,6 +16,6 @@ import { OffersModule } from '../offers/offers.module';
   ],
   controllers: [UsersController],
   providers: [UsersService],
-  exports: [UsersService, TypeOrmModule.forFeature([User])],
+  exports: [UsersService, TypeOrmModule],
 })
 export class UsersModule {}
