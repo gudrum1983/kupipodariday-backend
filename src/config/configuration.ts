@@ -16,4 +16,7 @@ export default () => ({
     secret: process.env.JWT_SECRET || 'SECRETKEY',
     ttl: parseInt(process.env.JWT_TTL) || '30000s',
   },
+  hash: {
+    saltRounds: parseInt(process.env.SALT_ROUNDS, 10) || 10,
+  },
 });

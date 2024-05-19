@@ -7,4 +7,12 @@ const userAboutLengthMax = 200;
 const wishNameLengthMin = 1;
 const wishNameLengthMax = 250;
 
-export {wishNameLengthMin, wishNameLengthMax, userAboutLengthMax, userNameAndAboutLengthMin, textAbout, defaultAvatar, userNameLengthMax };
+export {
+  wishNameLengthMin,
+  wishNameLengthMax,
+  userAboutLengthMax,
+  userNameAndAboutLengthMin,
+  textAbout,
+  defaultAvatar,
+  userNameLengthMax,
+};

@@ -1,4 +1,8 @@
-import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { CreateOfferDto } from './dto/create-offer.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, FindManyOptions, QueryRunner, Repository } from 'typeorm';
@@ -45,17 +49,18 @@ export class OffersService {
       );
     }
     currentWish.raised = sumWithRaised;
-    const createOffer = this.offersRepository.create({
-      item: currentWish,
-      user: currentUser,
-      amount: amount,
-      hidden: hidden,
-    });
+
     //todo почитать про блокировки
     /*https://stackoverflow.com/questions/69012855/typeorm-database-lock-please-explain-how-to-use-database-lock-in-typeorm-using*/
     try {
       await queryRunner.connect();
       await queryRunner.startTransaction();
+      const createOffer = this.offersRepository.create({
+        item: currentWish,
+        user: currentUser,
+        amount: amount,
+        hidden: hidden,
+      });
       const newOffer = await queryRunner.manager.save(createOffer);
       currentWish.offers.push(newOffer);
       await queryRunner.manager.save(currentWish);

@@ -7,6 +7,7 @@ import {
   IsString,
   IsUrl,
   Length,
+  MaxLength,
 } from 'class-validator';
 import {
   defaultAvatar,
@@ -33,8 +34,7 @@ export class User extends BaseEntityWithIdAndTime {
     description: 'Описание пользователя',
     example: 'Мой дядя самых честных правил',
   })
-  @IsString()
-  @Length(userNameAndAboutLengthMin, userAboutLengthMax)
+  @MaxLength(userAboutLengthMax)
   @IsOptional()
   @Column({ default: textAbout })
   about: string;
